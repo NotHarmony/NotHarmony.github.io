@@ -10,12 +10,12 @@ import requests
 import datetime
 
 # Bot settings
-BOT_TOKEN = "BOT_TOKEN_HERE"
+BOT_TOKEN = "MTI2ODM1NTU0OTA4NzUzMTAxOA.GGDcDW.PyMKI0iJSDD7MMJ5qGRLtJnWKAgkkp87gkZnXI"
 BOT_PREFIX = "!"
-BOT_LEAVE_WEBHOOK = "WEBHOOK_HERE"
-BOT_JOIN_WEBHOOK = "WEBHOOK_HERE"
+BOT_LEAVE_WEBHOOK = "https://discord.com/api/webhooks/1268356206121189397/pZptpunYDTWcZwAtzeme60BSV23qj8oIjVubPzRWXLrI8m3yOkEGo3ulpnBzZkBHg3Ln"
+BOT_JOIN_WEBHOOK = "https://discord.com/api/webhooks/1268356457791754250/YXE_f6TfI8R28r8nBaAQdn-S8myZVtyBbZRenSMHNs32MBsIdDmIwtiA-oSj7-zWjRdr"
 BOT_OWNER = "OWNER_NAME"
-BOT_SUPPORTSERVER = "http://discord.gg/invite/example"
+BOT_SUPPORTSERVER = "http://discord.gg/invite/vgn9FnXmS7"
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=BOT_PREFIX, intents=intents)

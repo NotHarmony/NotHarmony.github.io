@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmony.lol</title>
+    <style>
+        /* Styling the body */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 110vh;
+            background: linear-gradient(to bottom, yellow, black);
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        /* Styling the button */
+        button {
+            background-color: yellow;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        /* Button hover effect */
+        button:hover {
+            background-color: lightgray;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>Shiba Gold</h1>
+            <p>Thank you for using Shiba Gold Made By Zinx.</p>
+        <p>This menu was created by Zinx.</p>
+        <button onclick="window.location.href='https://discord.gg/Harmony-lol';">Discord</button>
+            <p>cant join the discord press the pink button called "download" to download the menu manually</p>
+            <button onclick="window.location.href='https://github.com/LACxMIKEY/menu-rel/raw/main/Harmony.lol-V4%202.dll';">Download</button>
+            <p>READ: Just Make sure everyone has fun and dont abuse the menu😎</p>
+
+</html>

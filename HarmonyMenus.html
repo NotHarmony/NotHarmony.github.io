@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCG Clients</title>
+
+    <meta property="og:title" content="TCG Clients">
+    <meta property="og:description" content="Welcome to the official page of TCG Clients. This page contains DLLs which you can download and use. Only use when necessary.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/TCGMonk/clients/refs/heads/main/thumbnail.jpg">
+    <meta property="og:url" content="https://tcgmonk.github.io/clients/">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: auto; /* Changed to allow height to adjust based on content */
+            background: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            overflow-y: auto; /* Ensure vertical scrolling if content overflows */
+        }
+
+        h1 {
+            color: white;
+            margin: 20px 0;
+        }
+
+        .menu {
+            background-color: #333;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            display: inline-block; /* Ensures sections are displayed side by side if space allows */
+            width: calc(100% - 40px); /* Adjusts width considering margin */
+            max-width: 600px; /* Sets a maximum width for better readability */
+        }
+
+        .menu h2 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .menu p {
+            color: white;
+            font-size: 18px;
+            margin: 5px 0 15px;
+        }
+
+        .download-btn {
+            padding: 10px 20px;
+            background-color: green;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: limegreen;
+        }
+
+        /* Starry background styles */
+        .star {
+            width: 4px;
+            height: 4px;
+            background: purple;
+            position: absolute;
+            animation: twinkling 3s infinite ease-in-out;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        @keyframes twinkling {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes moveStars {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-100%);
+            }
+        }
+
+        .star-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 200%;
+            animation: moveStars 30s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Star container -->
+    <div class="star-container">
+        <script>
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.top = Math.random() * 200 + 'vh';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.animationDuration = Math.random() * 2 + 1 + 's';
+                document.querySelector('.star-container').appendChild(star);
+            }
+        </script>
+    </div>
+
+    <h1>TCG Clients</h1>
+    <p>Welcome to the official page of "TCG Clients". This page contains DLLs which you can download and use. Only use when necessary.</p>
+    
+    <div class="menu">
+        <h2>TCG's Client</h2>
+        <p>Overpowered Client</p>
+        <p>Version 6</p>
+        <a href="https://github.com/TCGMonk/clients/raw/refs/heads/main/TCG'S%20CLIENT%20V6.dll" download class="download-btn">Download</a>
+    </div>
+
+    <div class="menu">
+        <h2>TCG Hyper</h2>
+        <p>Hyper Client</p>
+        <p>Version 2</p>
+        <a href="https://github.com/TCGMonk/clients/raw/refs/heads/main/TCGHyperV2.dll" download class="download-btn">Download</a>
+    </div>
+
+    <div class="menu">
+        <h2>Lunar Client</h2>
+        <p>Clean Client</p>
+        <p>Version 1</p>
+        <a href="https://github.com/TCGMonk/clients/raw/refs/heads/main/Lunar%20Client%20By%20MonkV1.dll" download class="download-btn">Download</a>
+    </div>
+    <h1>----------------------------</h1>
+    <h1>Modded Apks</h1>
+    <p>This part of the website contains modded apks. Modded apks are Apks that are modified, self-explanatory.</p>
+
+    <div class="menu">
+        <h2>Soon</h2>
+        <p>Made by: ______</p>
+        <a href="" download class="download-btn">Download APK</a>
+    </div>
+    <h1>----------------------------</h1>
+    <h1>Multi Tools (PC)</h1>
+    <p>This part of the website contains Multi Tools. Multi Tools are tools that you can use for various functions.</p>
+    <p>EDUCATIONAL PURPOSES ONLY</p>
+    
+    <div class="menu">
+        <h2>TCG Cons</h2>
+        <p>IP logger</p>
+        <p>Made by: TCGMonk</p>
+        <p>Version 1</p>
+        <a href="https://github.com/TCGMonk/clients/raw/refs/heads/main/TCG%20CONS%20PULLER.bat" download class="download-btn">Download .bat</a>
+    </div>
+</body>
+</html>

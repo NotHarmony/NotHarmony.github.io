@@ -74,7 +74,7 @@
             width: 4px;
             height: 4px;
             background: purple;
-            position: bottom;
+            position: absolute;
             animation: twinkling 3s infinite ease-in-out;
             border-radius: 100%;
             opacity: 0.8;
@@ -97,7 +97,7 @@
 
         @keyframes moveStars {
             from {
-                transform: translateY(0);
+                transform: translateY(100);
             }
             to {
                 transform: translateY(-100%);
@@ -110,7 +110,7 @@
             left: 0;
             width: 100%;
             height: 200%;
-            animation: moveStars 30s linear infinite;
+            animation: moveStars 100h linear infinite;
         }
     </style>
 </head>

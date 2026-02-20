@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ThatchMods</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap');
+
+:root {
+  --bg:      #0d0d0f;
+  --s1:      #141417;
+  --s2:      #1a1a1f;
+  --s3:      #202027;
+  --border:  rgba(255,255,255,0.07);
+  --accent:  #7c5cfc;
+  --accent2: #c084fc;
+  --green:   #4ade80;
+  --gold:    #fbbf24;
+  --red:     #f87171;
+  --blue:    #60a5fa;
+  --text:    #f0f0f5;
+  --muted:   #6b6b80;
+  --ui:      'Space Mono', monospace;
+  --hd:      'Syne', sans-serif;
+  --radius:  12px;
+  --tab-h:   64px;
+  --fs:      1; /* font scale multiplier */
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body { height:100%; overflow:hidden; }
+
+body {
+  background: var(--bg);
+  font-family: var(--ui);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+/* ── SPLASH ── */
+.splash {
+  position:fixed; inset:0; z-index:999;
+  background:var(--bg);
+  display:flex; align-items:center; justify-content:center; flex-direction:column; gap:14px;
+  animation: splashOut 0.5s ease forwards;
+  animation-delay: 2s;
+}
+@keyframes splashOut { to { opacity:0; pointer-events:none; } }
+.splash-logo {
+  font-family:var(--hd); font-size:clamp(32px,8vw,52px); font-weight:800; letter-spacing:-1px;
+  background:linear-gradient(135deg,#fff 0%,var(--accent2) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.splash-logo span { -webkit-text-fill-color:var(--accent); }
+.splash-bar { width:160px; height:2px; background:var(--s3); border-radius:2px; overflow:hidden; }
+.splash-fill { height:100%; background:var(--accent); animation:fill 1.8s ease forwards; }
+@keyframes fill { from{width:0} to{width:100%} }
+.splash-sub { font-size:11px; color:var(--muted); letter-spacing:3px; text-transform:uppercase; }
+
+/* ── HEADER ── */
+.header {
+  flex-shrink:0;
+  padding:14px 16px 10px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.logo { font-family:var(--hd); font-size:20px; font-weight:800; background:linear-gradient(135deg,#fff 30%,var(--accent2) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.logo span { -webkit-text-fill-color:var(--accent); }
+.header-right { display:flex; align-items:center; gap:8px; }
+.version-tag { font-size:9px; color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:3px 8px; }
+.theme-dot { width:18px; height:18px; border-radius:50%; background:var(--accent); cursor:pointer; border:2px solid rgba(255,255,255,0.1); }
+
+/* ── CONTENT ── */
+.content {
+  flex:1; overflow:hidden; position:relative;
+}
+.page {
+  position:absolute; inset:0; overflow-y:auto;
+  padding:16px; display:none; flex-direction:column; gap:14px;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.page::-webkit-scrollbar { display:none; }
+.page.active { display:flex; }
+
+/* ── BOTTOM NAV ── */
+.nav {
+  flex-shrink:0;
+  display:flex; overflow-x:auto; overflow-y:hidden;
+  border-top:1px solid var(--border);
+  background:var(--s1);
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.nav::-webkit-scrollbar { display:none; }
+.nav-item {
+  flex:0 0 auto; min-width:70px;
+  padding:10px 8px 8px;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  cursor:pointer; transition:all 0.12s; border-top:2px solid transparent;
+  -webkit-tap-highlight-color:transparent;
+}
+.nav-item.active { border-top-color:var(--accent); }
+.nav-icon { font-size:20px; line-height:1; }
+.nav-label { font-size:8px; color:var(--muted); letter-spacing:0.5px; text-transform:uppercase; white-space:nowrap; }
+.nav-item.active .nav-label { color:var(--accent2); }
+
+/* ── CARD ── */
+.card {
+  background:var(--s1); border:1px solid var(--border); border-radius:var(--radius);
+  overflow:hidden;
+}
+.card-header {
+  padding:11px 14px; border-bottom:1px solid var(--border);
+  font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.card-header-left { display:flex; align-items:center; gap:8px; }
+.card-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); }
+.card-body { padding:14px; }
+
+/* ── BUTTONS ── */
+.btn {
+  width:100%; padding:13px; border:none; border-radius:9px;
+  font-family:var(--ui); font-size:11px; letter-spacing:2px; text-transform:uppercase;
+  cursor:pointer; transition:all 0.12s; display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn-primary { background:var(--accent); color:#fff; box-shadow:0 4px 20px rgba(124,92,252,0.3); }
+.btn-primary:active { transform:scale(0.98); }
+.btn-ghost { background:transparent; color:var(--muted); border:1px solid var(--border); }
+.btn-ghost:active { background:var(--s2); }
+.btn-danger { background:rgba(248,113,113,0.1); color:var(--red); border:1px solid rgba(248,113,113,0.25); }
+.btn-green { background:rgba(74,222,128,0.1); color:var(--green); border:1px solid rgba(74,222,128,0.25); }
+.btn-sm { padding:8px 14px; font-size:9px; width:auto; }
+
+/* ── INPUTS ── */
+.input {
+  width:100%; background:var(--s2); border:1px solid var(--border); border-radius:8px;
+  padding:11px 14px; font-family:var(--ui); font-size:12px; color:var(--text); outline:none;
+  transition:border-color 0.15s;
+}
+.input:focus { border-color:rgba(124,92,252,0.5); }
+.input::placeholder { color:var(--muted); }
+textarea.input { resize:none; line-height:1.6; }
+
+/* ── SEARCH ── */
+.search-wrap { position:relative; }
+.search-input { padding-left:38px; }
+.search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:14px; pointer-events:none; }
+
+/* ── PILLS ── */
+.pill-row { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; }
+.pill-row::-webkit-scrollbar { display:none; }
+.pill {
+  flex-shrink:0; padding:5px 12px; border-radius:99px; font-size:10px;
+  border:1px solid var(--border); color:var(--muted); cursor:pointer; background:var(--s2);
+  transition:all 0.12s; white-space:nowrap;
+}
+.pill.active { background:rgba(124,92,252,0.15); border-color:var(--accent); color:var(--accent2); }
+
+/* ── ITEM GRID ── */
+.item-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:8px; }
+.item-card {
+  background:var(--s2); border:1px solid var(--border); border-radius:10px;
+  padding:12px 8px; cursor:pointer; transition:all 0.12s; text-align:center;
+  -webkit-tap-highlight-color:transparent;
+}
+.item-card:active { transform:scale(0.96); }
+.item-card.selected { border-color:var(--accent); background:rgba(124,92,252,0.12); box-shadow:0 0 16px rgba(124,92,252,0.2); }
+.item-emoji { font-size:24px; display:block; margin-bottom:6px; }
+.item-name { font-size:8px; color:var(--text); line-height:1.4; }
+.item-id { font-size:7px; color:var(--muted); display:block; margin-top:2px; }
+
+/* ── SLOT CARDS ── */
+.slot-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.slot-card {
+  background:var(--s2); border:1px solid var(--border); border-radius:10px;
+  padding:12px; cursor:pointer; transition:all 0.12s; position:relative;
+}
+.slot-card.active { border-color:var(--accent); }
+.slot-card.filled { border-color:rgba(74,222,128,0.35); }
+.slot-card-icon { font-size:22px; margin-bottom:6px; }
+.slot-card-name { font-size:9px; color:var(--muted); letter-spacing:0.5px; margin-bottom:3px; }
+.slot-card-item { font-size:10px; color:var(--text); }
+.slot-card-item.empty { color:var(--muted); }
+.slot-dot { position:absolute; top:10px; right:10px; width:7px; height:7px; border-radius:50%; background:var(--border); }
+.slot-card.filled .slot-dot { background:var(--green); box-shadow:0 0 6px var(--green); }
+.slot-clr { position:absolute; bottom:8px; right:8px; font-size:8px; color:var(--muted); padding:2px 6px; border:1px solid var(--border); border-radius:4px; cursor:pointer; }
+.slot-clr:active { color:var(--red); }
+
+/* ── CONTROLS ── */
+.ctrl-row {
+  display:flex; align-items:center; gap:10px;
+  background:var(--s2); border:1px solid var(--border); border-radius:8px; padding:10px 14px;
+}
+.ctrl-label { font-size:10px; color:var(--muted); flex:1; white-space:nowrap; }
+.ctrl-right { display:flex; align-items:center; gap:8px; }
+input[type=range] {
+  -webkit-appearance:none; width:90px; height:3px; background:var(--s3); border-radius:2px; outline:none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:16px; height:16px;
+  background:var(--accent); border-radius:50%; cursor:pointer;
+}
+.ctrl-val { font-size:11px; color:var(--accent2); width:30px; text-align:right; }
+
+/* ── QTY ── */
+.qty-row { display:flex; align-items:center; gap:12px; }
+.qty-btn {
+  width:40px; height:40px; border-radius:8px; background:var(--s2); border:1px solid var(--border);
+  color:var(--text); font-size:20px; display:flex; align-items:center; justify-content:center;
+  cursor:pointer; flex-shrink:0; user-select:none; transition:all 0.1s;
+}
+.qty-btn:active { background:rgba(124,92,252,0.2); border-color:var(--accent); }
+.qty-num { font-size:18px; color:var(--text); flex:1; text-align:center; }
+
+/* ── LOG ── */
+.log {
+  background:#0a0a0c; border:1px solid var(--border); border-radius:8px;
+  padding:10px 14px; font-size:11px; line-height:1.7; max-height:80px; overflow-y:auto;
+}
+.log::-webkit-scrollbar { display:none; }
+.ok { color:var(--green); }
+.warn { color:var(--gold); }
+.err { color:var(--red); }
+.dim { color:var(--muted); }
+
+/* ── SELECTED ITEM ── */
+.sel-display {
+  background:var(--s2); border:1px solid var(--border); border-radius:8px;
+  padding:12px 14px; display:flex; align-items:center; gap:12px; min-height:56px;
+}
+.sel-emoji { font-size:26px; }
+.sel-info { flex:1; overflow:hidden; }
+.sel-name { font-size:12px; color:var(--text); }
+.sel-id { font-size:9px; color:var(--muted); margin-top:2px; }
+.sel-none { font-size:11px; color:var(--muted); }
+
+/* ── MAP ── */
+.map-canvas-wrap {
+  position:relative; background:var(--s2); border:1px solid var(--border);
+  border-radius:10px; overflow:hidden; aspect-ratio:1; width:100%; max-width:400px;
+  margin:0 auto;
+}
+#mapCanvas { width:100%; height:100%; display:block; touch-action:none; }
+.map-legend { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.legend-item { display:flex; align-items:center; gap:5px; font-size:9px; color:var(--muted); }
+.legend-dot { width:8px; height:8px; border-radius:50%; }
+
+.player-list { display:flex; flex-direction:column; gap:6px; }
+.player-row {
+  display:flex; align-items:center; gap:10px;
+  background:var(--s2); border:1px solid var(--border); border-radius:8px; padding:10px 12px;
+}
+.player-avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+.player-info { flex:1; }
+.player-name { font-size:11px; color:var(--text); }
+.player-status { font-size:9px; color:var(--muted); margin-top:2px; }
+.player-actions { display:flex; gap:6px; }
+.player-action-btn { font-size:10px; padding:4px 8px; border-radius:5px; border:1px solid var(--border); cursor:pointer; background:var(--s3); color:var(--muted); }
+.player-action-btn:active { border-color:var(--accent); color:var(--accent); }
+.player-row.you { border-color:rgba(124,92,252,0.4); }
+
+.add-player-row { display:flex; gap:8px; }
+.add-player-row .input { flex:1; }
+
+/* ── PRESETS ── */
+.preset-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.preset-card {
+  background:var(--s2); border:1px solid var(--border); border-radius:10px;
+  padding:14px 12px; text-align:center; cursor:pointer; transition:all 0.12s;
+}
+.preset-card:active { transform:scale(0.97); border-color:var(--accent); }
+.preset-emoji { font-size:24px; display:block; margin-bottom:6px; }
+.preset-name { font-size:10px; color:var(--text); }
+.preset-desc { font-size:8px; color:var(--muted); margin-top:3px; }
+
+/* ── JSON ── */
+.json-wrap { position:relative; }
+.json-area {
+  width:100%; background:#0a0a0c; border:1px solid var(--border); border-radius:8px;
+  padding:12px 14px; font-family:var(--ui); font-size:10px; color:var(--green);
+  line-height:1.6; resize:none; outline:none; height:160px;
+}
+.copy-float {
+  position:absolute; top:8px; right:8px; background:var(--s2); border:1px solid var(--border);
+  border-radius:6px; padding:4px 10px; font-family:var(--ui); font-size:9px; color:var(--muted);
+  cursor:pointer; transition:all 0.12s;
+}
+.copy-float.ok { color:var(--green); border-color:rgba(74,222,128,0.4); }
+
+/* ── SETTINGS ── */
+.setting-row {
+  display:flex; align-items:center; gap:12px;
+  padding:13px 14px; border-bottom:1px solid var(--border);
+}
+.setting-row:last-child { border-bottom:none; }
+.setting-info { flex:1; }
+.setting-label { font-size:11px; color:var(--text); }
+.setting-desc { font-size:9px; color:var(--muted); margin-top:3px; }
+.toggle {
+  width:42px; height:24px; background:var(--s3); border:1px solid var(--border);
+  border-radius:12px; position:relative; cursor:pointer; transition:background 0.2s; flex-shrink:0;
+}
+.toggle.on { background:var(--accent); border-color:var(--accent); }
+.toggle::after {
+  content:''; position:absolute; top:3px; left:3px; width:16px; height:16px;
+  background:#fff; border-radius:50%; transition:transform 0.2s;
+}
+.toggle.on::after { transform:translateX(18px); }
+
+.color-swatches { display:flex; gap:8px; flex-wrap:wrap; }
+.swatch {
+  width:32px; height:32px; border-radius:50%; cursor:pointer;
+  border:2px solid transparent; transition:all 0.12s;
+}
+.swatch.active { border-color:#fff; transform:scale(1.15); }
+
+.font-btns { display:flex; gap:6px; }
+.font-btn {
+  padding:6px 12px; border-radius:6px; border:1px solid var(--border);
+  background:var(--s2); cursor:pointer; color:var(--muted); font-size:10px; transition:all 0.12s;
+}
+.font-btn.active { border-color:var(--accent); color:var(--accent2); background:rgba(124,92,252,0.1); }
+
+/* ── HISTORY ── */
+.history-list { display:flex; flex-direction:column; gap:8px; }
+.history-card {
+  background:var(--s2); border:1px solid var(--border); border-radius:10px;
+  padding:12px 14px; display:flex; align-items:center; gap:12px;
+}
+.history-icon { font-size:20px; }
+.history-info { flex:1; }
+.history-name { font-size:11px; color:var(--text); }
+.history-time { font-size:9px; color:var(--muted); margin-top:3px; }
+.history-load { font-size:9px; color:var(--accent2); cursor:pointer; padding:4px 10px; border:1px solid rgba(124,92,252,0.3); border-radius:5px; }
+.history-load:active { background:rgba(124,92,252,0.15); }
+.history-empty { font-size:11px; color:var(--muted); text-align:center; padding:24px 0; }
+
+/* ── NOTES ── */
+.notes-area {
+  width:100%; background:var(--s2); border:1px solid var(--border); border-radius:10px;
+  padding:14px; font-family:var(--ui); font-size:12px; color:var(--text);
+  line-height:1.8; resize:none; outline:none; min-height:220px;
+}
+.notes-area:focus { border-color:rgba(124,92,252,0.4); }
+.notes-counter { font-size:9px; color:var(--muted); text-align:right; margin-top:6px; }
+
+/* ── DIVIDER ── */
+.divider { height:1px; background:var(--border); }
+
+/* ── BADGE ── */
+.badge {
+  display:inline-block; padding:2px 7px; border-radius:4px; font-size:8px; letter-spacing:0.5px;
+}
+.badge-green { background:rgba(74,222,128,0.12); color:var(--green); }
+.badge-red { background:rgba(248,113,113,0.12); color:var(--red); }
+.badge-blue { background:rgba(96,165,250,0.12); color:var(--blue); }
+.badge-gold { background:rgba(251,191,36,0.12); color:var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div class="splash">
+  <div class="splash-logo">Thatch<span>Mods</span></div>
+  <div class="splash-bar"><div class="splash-fill"></div></div>
+  <div class="splash-sub">Loading...</div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">Thatch<span>Mods</span></div>
+  <div class="header-right">
+    <div class="version-tag">v1.0</div>
+    <div class="theme-dot" id="themeToggle" onclick="cycleTheme()" title="Change accent color"></div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- ITEMS PAGE -->
+  <div class="page active" id="page-items">
+    <div class="card">
+      <div class="card-header"><div class="card-header-left"><div class="card-dot"></div>Browse Items</div></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input class="input search-input" id="searchInput" placeholder="Search..." type="text">
+        </div>
+        <div class="pill-row" id="pillRow"></div>
+        <div class="item-grid" id="itemGrid"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-header-left"><div class="card-dot"></div>Configure & Add</div></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+        <div class="sel-display" id="selDisplay"><span class="sel-none">Tap an item above to select it</span></div>
+
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <div class="ctrl-row">
+            <span class="ctrl-label">Color Hue</span>
+            <div class="ctrl-right">
+              <input type="range" id="sHue" min="0" max="360" value="0" oninput="document.getElementById('vHue').textContent=this.value">
+              <span class="ctrl-val" id="vHue">0</span>
+            </div>
+          </div>
+          <div class="ctrl-row">
+            <span class="ctrl-label">Saturation</span>
+            <div class="ctrl-right">
+              <input type="range" id="sSat" min="0" max="100" value="0" oninput="document.getElementById('vSat').textContent=this.value">
+              <span class="ctrl-val" id="vSat">0</span>
+            </div>
+          </div>
+          <div class="ctrl-row">
+            <span class="ctrl-label">Scale</span>
+            <div class="ctrl-right">
+              <input type="range" id="sScale" min="-127" max="127" value="0" oninput="document.getElementById('vScale').textContent=this.value">
+              <span class="ctrl-val" id="vScale">0</span>
+            </div>
+          </div>
+          <div class="ctrl-row">
+            <span class="ctrl-label">Quantity (backpack fill)</span>
+            <div class="qty-row" style="flex:0 0 auto">
+              <div class="qty-btn" onclick="changeQty(-1)">−</div>
+              <div class="qty-num" id="qtyNum" style="min-width:36px">1</div>
+              <div class="qty-btn" onclick="changeQty(1)">+</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ctrl-row" style="flex-wrap:wrap;gap:6px">
+          <span class="ctrl-label">Target Slot</span>
+          <span id="targetSlotLabel" style="font-size:11px;color:var(--accent2)">Right Hand</span>
+        </div>
+
+        <button class="btn btn-primary" onclick="addToSlot()">⚒ Add to Slot</button>
+        <div class="log" id="itemLog"><span class="dim">// Ready</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLOTS PAGE -->
+  <div class="page" id="page-slots">
+    <div class="card">
+      <div class="card-header"><div class="card-header-left"><div class="card-dot"></div>Active Slot</div></div>
+      <div class="card-body">
+        <div class="slot-grid" id="slotGrid">
+          <div class="slot-card active" data-slot="rightHand" onclick="selectSlot('rightHand',this)">
+            <div class="slot-card-icon">✋</div>
+            <div class="slot-card-name">Right Hand</div>
+            <div class="slot-card-item empty" id="sc-rightHand">Empty</div>
+            <div class="slot-dot"></div>
+            <div class="slot-clr" onclick="event.stopPropagation();clearSlot('rightHand')">CLR</div>
+          </div>
+          <div class="slot-card" data-slot="leftHand" onclick="selectSlot('leftHand',this)">
+            <div class="slot-card-icon">🤚</div>
+            <div class="slot-card-name">Left Hand</div>
+            <div class="slot-card-item empty" id="sc-leftHand">Empty</div>
+            <div class="slot-dot"></div>
+            <div class="slot-clr" onclick="event.stopPropagation();clearSlot('leftHand')">CLR</div>
+          </div>
+          <div class="slot-card" data-slot="rightHip" onclick="selectSlot('rightHip',this)">
+            <div class="slot-card-icon">🗡</div>
+            <div class="slot-card-name">Right Hip</div>
+            <div class="slot-card-item empty" id="sc-rightHip">Empty</div>
+            <div class="slot-dot"></div>
+            <div class="slot-clr" onclick="event.stopPropagation();clearSlot('rightHip')">CLR</div>
+          </div>
+          <div class="slot-card" data-slot="leftHip" onclick="selectSlot('leftHip',this)">
+            <div class="slot-card-icon">🗡</div>
+            <div class="slot-card-name">Left Hip</div>
+            <div class="slot-card-item empty" id="sc-leftHip">Empty</div>
+            <div class="slot-dot"></div>
+            <div class="slot-clr" onclick="event.stopPropagation();clearSlot('leftHip')">CLR</div>
+          </div>
+          <div class="slot-card" data-slot="back" onclick="selectSlot('back',this)" style="grid-column:1/-1">
+            <div class="slot-card-icon">🎒</div>
+            <div class="slot-card-name">Back</div>
+            <div class="slot-card-item empty" id="sc-back">Empty</div>
+            <div class="slot-dot"></div>
+            <div class="slot-clr" onclick="event.stopPropagation();clearSlot('back')">CLR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-danger" onclick="clearAll()">🗑 Clear All Slots</button>
+  </div>
+
+  <!-- LOBBY PAGE -->
+  <div class="page" id="page-lobby">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><div class="card-dot"></div>Lobby Map</div>
+        <span class="badge badge-green" id="playerCountBadge">1 player</span>
+      </div>
+      <div class="card-body">
+        <div class="map-canvas-wrap">
+          <canvas id="mapCanvas"></canvas>
+        </div>
+        <div class="map-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#7c5cfc"></div>You</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#60a5fa"></div>Friend</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f87171"></div>Enemy</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Unknown</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-header-left"><div class="card-dot"></div>Add Player</div></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:8px">
+        <div class="add-player-row">
+          <input class="input" id="playerNameInput" placeholder="Player name..." type="text">
+          <select class="input" id="playerTypeSelect" style="width:auto;flex-shrink:0">
+            <option value="friend">Friend</option>
+            <option value="enemy">Enemy</option>
+            <option value="unknown">Unknown</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="addPlayer()">+ Add Player</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><div class="card-dot"></div>Players</div>
+        <button class="btn btn-ghost btn-sm" onclick="clearPlayers()">Clear All</button>
+      </div>
+      <div class="card-body">
+        <div class="player-list" id="playerList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRESETS PAGE -->
+  <div class="page" id="page-presets">
+    <div class="card">
+      <div class="card-header"><div class="card-header-left"><div class="card-dot"></div>Quick Presets</div></div>
+      <div class="card-body">
+        <div class="preset-grid">
+          <div class="preset-card" onclick="applyPreset('loot')"><span class="preset-emoji">💰</span><div class="preset-name">Loot King</div><div class="preset-desc">Gold bars & diamonds</div></div>
+          <div class="preset-card" onclick="applyPreset('guns')"><span class="preset-emoji">🔫</span><div class="preset-name">Gun Rack</div><div class="preset-desc">Full weapons loadout</div></div>
+          <div class="preset-card" onclick="applyPreset('health')"><span class="preset-emoji">❤️</span><div class="preset-name">God Kit</div><div class="preset-desc">Max medkits & heals</div></div>
+          <div class="preset-card" onclick="applyPreset('fish')"><span class="preset-emoji">🎣</span><div class="preset-name">Fisher</div><div class="preset-desc">Pro rod + all bait</div></div>
+          <div class="preset-card" onclick="applyPreset('apples')"><span class="preset-emoji">🍎</span><div class="preset-name">Apple Stack</div><div class="preset-desc">32x apples</div></div>
+          <div class="preset-card" onclick="applyPreset('maxpack')"><span class="preset-emoji">🎒</span><div class="preset-name">Max Pack</div><div class="preset-desc">Full backpacks all slots</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="log" id="presetLog"><span class="dim">// Choose a preset</span></div>
+  </div>
+
+  <!-- IMPORT PAGE -->
+  <div class="page" id="page-import">
+    <div class="card">
+      <div class="card-header"><div class="card-header-left"><div class="card-dot"></div>Import JSON</div></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+        <textarea class="input" id="importArea" rows="6" placeholder="Paste your Animal Company loadout JSON here..."></textarea>
+        <button class="btn btn-primary" onclick="importJSON()">📥 Import Loadout</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('importArea').value=''">Clear</button>
+      </div>
+    </div>
+    <div class="log" id="importLog"><span class="dim">// Paste JSON and import</span></div>
+  </div>
+
+  <!-- EXPORT PAGE -->
+  <div class="page" id="page-export">
+    <div class="card">
+      <div class="card-header"><div class="card-header-left"><div class="card-dot"></div>Export Loadout</div></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+        <div class="json-wrap">
+          <textarea class="json-area" id="jsonOut" readonly placeholder="Hit Generate..."></textarea>
+          <div class="copy-float" id="copyBtn" onclick="copyJSON()">Copy</div>
+        </div>
+        <button class="btn btn-primary" onclick="generateJSON()">⚙ Generate JSON</button>
+        <button class="btn btn-ghost" onclick="downloadJSON()">💾 Download .json</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-header-left"><div class="card-dot"></div>How To Use</div></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:22px;height:22px;border-radius:50%;background:rgba(124,92,252,0.15);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--accent);flex-shrink:0">1</div>
+          <div><div style="font-size:10px;color:var(--text);margin-bottom:3px">Build your loadout</div><div style="font-size:9px;color:var(--muted);line-height:1.5">Use the Items tab to pick items and assign them to slots.</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:22px;height:22px;border-radius:50%;background:rgba(124,92,252,0.15);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--accent);flex-shrink:0">2</div>
+          <div><div style="font-size:10px;color:var(--text);margin-bottom:3px">Generate & copy</div><div style="font-size:9px;color:var(--muted);line-height:1.5">Hit Generate then copy the JSON output.</div></div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:22px;height:22px;border-radius:50%;background:rgba(124,92,252,0.15);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--accent);flex-shrink:0">3</div>
+          <div><div style="font-size:10px;color:var(--text);margin-bottom:3px">Load in 444 / XMOD</div><div style="font-size:9px;color:var(--muted);line-height:1.5">Paste or import the JSON in the mod menu in-game.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="log" id="exportLog"><span class="dim">// Ready to export</span></div>
+  </div>
+
+  <!-- NOTES PAGE -->
+  <div class="page" id="page-notes">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><div class="card-dot"></div>Notes</div>
+        <button class="btn btn-ghost btn-sm" onclick="clearNotes()">Clear</button>
+      </div>
+      <div class="card-body">
+        <textarea class="notes-area" id="notesArea" placeholder="Write anything here — strategies, item IDs, player names...&#10;&#10;Your notes save automatically."></textarea>
+        <div class="notes-counter" id="notesCounter">0 chars</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY PAGE -->
+  <div class="page" id="page-history">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left"><div class="card-dot"></div>Loadout History</div>
+        <button class="btn btn-ghost btn-sm" onclick="clearHistory()">Clear</button>
+      </div>
+      <div class="card-body">
+        <div class="history-list" id="historyList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS PAGE -->
+  <div class="page" id="page-settings">
+    <div class="card">
+      <div class="card-header"><div class="card-header-left"><div class="card-dot"></div>Appearance</div></div>
+      <div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">Accent Color</div>
+            <div class="setting-desc">Pick your theme color</div>
+          </div>
+          <div class="color-swatches" id="swatches"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">Font Size</div>
+            <div class="setting-desc">Adjust for VR readability</div>
+          </div>
+          <div class="font-btns">
+            <div class="font-btn" onclick="setFontSize('sm')">S</div>
+            <div class="font-btn active" onclick="setFontSize('md')">M</div>
+            <div class="font-btn" onclick="setFontSize('lg')">L</div>
+            <div class="font-btn" onclick="setFontSize('xl')">XL</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-header-left"><div class="card-dot"></div>Preferences</div></div>
+      <div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">Auto-save Notes</div>
+            <div class="setting-desc">Save notes as you type</div>
+          </div>
+          <div class="toggle on" id="tog-autosave" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">Compact Map</div>
+            <div class="setting-desc">Smaller lobby map</div>
+          </div>
+          <div class="toggle" id="tog-compact" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">Confirm Clear</div>
+            <div class="setting-desc">Ask before clearing slots</div>
+          </div>
+          <div class="toggle on" id="tog-confirm" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info">
+            <div class="setting-label">Save History</div>
+            <div class="setting-desc">Remember past loadouts</div>
+          </div>
+          <div class="toggle on" id="tog-history" onclick="this.classList.toggle('on')"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-header-left"><div class="card-dot"></div>About</div></div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:11px;color:var(--muted);line-height:1.7">
+          ThatchMods Loadout Builder v1.0<br>
+          Built for Animal Company (444 / XMOD)<br>
+          <span style="color:var(--accent2)">Open source — free forever</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-danger" onclick="if(confirm('Reset everything?')){localStorage.clear();location.reload();}">⚠ Reset All Data</button>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-item active" data-page="items" onclick="navTo('items',this)"><span class="nav-icon">⚒</span><span class="nav-label">Items</span></div>
+  <div class="nav-item" data-page="slots" onclick="navTo('slots',this)"><span class="nav-icon">🎽</span><span class="nav-label">Slots</span></div>
+  <div class="nav-item" data-page="lobby" onclick="navTo('lobby',this)"><span class="nav-icon">🗺</span><span class="nav-label">Lobby</span></div>
+  <div class="nav-item" data-page="presets" onclick="navTo('presets',this)"><span class="nav-icon">⚡</span><span class="nav-label">Presets</span></div>
+  <div class="nav-item" data-page="import" onclick="navTo('import',this)"><span class="nav-icon">📥</span><span class="nav-label">Import</span></div>
+  <div class="nav-item" data-page="export" onclick="navTo('export',this)"><span class="nav-icon">📤</span><span class="nav-label">Export</span></div>
+  <div class="nav-item" data-page="notes" onclick="navTo('notes',this)"><span class="nav-icon">📝</span><span class="nav-label">Notes</span></div>
+  <div class="nav-item" data-page="history" onclick="navTo('history',this)"><span class="nav-icon">🕓</span><span class="nav-label">History</span></div>
+  <div class="nav-item" data-page="settings" onclick="navTo('settings',this)"><span class="nav-icon">⚙</span><span class="nav-label">Settings</span></div>
+</nav>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────
+const ITEMS=[
+  {id:'item_heart_gun',name:'Heart Gun',icon:'💗',cat:'Weapons'},
+  {id:'item_shotgun',name:'Shotgun',icon:'🔫',cat:'Weapons'},
+  {id:'item_revolver',name:'Revolver',icon:'🔫',cat:'Weapons'},
+  {id:'item_rifle',name:'Rifle',icon:'🔫',cat:'Weapons'},
+  {id:'item_rpg',name:'RPG',icon:'🚀',cat:'Weapons'},
+  {id:'item_grenade',name:'Grenade',icon:'💣',cat:'Weapons'},
+  {id:'item_sword',name:'Sword',icon:'⚔️',cat:'Weapons'},
+  {id:'item_crossbow',name:'Crossbow',icon:'🏹',cat:'Weapons'},
+  {id:'item_knife',name:'Knife',icon:'🔪',cat:'Weapons'},
+  {id:'item_bat',name:'Bat',icon:'🏏',cat:'Weapons'},
+  {id:'item_backpack_large_base',name:'Large Backpack',icon:'🎒',cat:'Gear'},
+  {id:'item_backpack_small',name:'Small Backpack',icon:'👝',cat:'Gear'},
+  {id:'item_jetpack',name:'Jetpack',icon:'🛸',cat:'Gear'},
+  {id:'item_flashlight',name:'Flashlight',icon:'🔦',cat:'Gear'},
+  {id:'item_rope',name:'Rope',icon:'🪢',cat:'Gear'},
+  {id:'item_shovel',name:'Shovel',icon:'⛏',cat:'Gear'},
+  {id:'item_map',name:'Map',icon:'🗺',cat:'Gear'},
+  {id:'item_apple',name:'Apple',icon:'🍎',cat:'Food'},
+  {id:'item_banana',name:'Banana',icon:'🍌',cat:'Food'},
+  {id:'item_orange',name:'Orange',icon:'🍊',cat:'Food'},
+  {id:'item_mushroom',name:'Mushroom',icon:'🍄',cat:'Food'},
+  {id:'item_medkit',name:'Med Kit',icon:'💊',cat:'Food'},
+  {id:'item_bandage',name:'Bandage',icon:'🩹',cat:'Food'},
+  {id:'item_goldbar',name:'Gold Bar',icon:'🥇',cat:'Valuables'},
+  {id:'item_diamond',name:'Diamond',icon:'💎',cat:'Valuables'},
+  {id:'item_coin',name:'Coin',icon:'🪙',cat:'Valuables'},
+  {id:'item_gem_red',name:'Ruby',icon:'🔴',cat:'Valuables'},
+  {id:'item_gem_blue',name:'Sapphire',icon:'🔵',cat:'Valuables'},
+  {id:'item_trophy',name:'Trophy',icon:'🏆',cat:'Valuables'},
+  {id:'item_fishing_rod',name:'Fishing Rod',icon:'🎣',cat:'Fishing'},
+  {id:'item_fishing_rod_pro',name:'Pro Rod',icon:'🎣',cat:'Fishing'},
+  {id:'item_bait_worm',name:'Worm Bait',icon:'🪱',cat:'Fishing'},
+  {id:'item_bait_lure',name:'Lure Bait',icon:'🪝',cat:'Fishing'},
+  {id:'item_fish_common',name:'Common Fish',icon:'🐟',cat:'Fishing'},
+  {id:'item_fish_rare',name:'Rare Fish',icon:'🐠',cat:'Fishing'},
+  {id:'item_fish_legendary',name:'Legendary Fish',icon:'🐡',cat:'Fishing'},
+];
+
+const CATS=['All',...new Set(ITEMS.map(i=>i.cat))];
+const THEMES=['#7c5cfc','#f87171','#4ade80','#60a5fa','#fbbf24','#f472b6','#34d399'];
+const SLOT_NAMES={rightHand:'Right Hand',leftHand:'Left Hand',rightHip:'Right Hip',leftHip:'Left Hip',back:'Back'};
+
+let selectedItem=null, currentSlot='rightHand', qty=1;
+let loadout={leftHand:{},rightHand:{},leftHip:{},rightHip:{},back:{}};
+let players=[{name:'You',type:'you',x:0.5,y:0.5}];
+let history=[];
+let notes='';
+let themeIdx=0;
+
+// ── NAV ──────────────────────────────────────────────────────
+function navTo(page,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  el.classList.add('active');
+  if(page==='lobby') drawMap();
+  if(page==='export') generateJSON();
+  if(page==='history') renderHistory();
+}
+
+// ── ITEMS ────────────────────────────────────────────────────
+function initItems(){
+  const pr=document.getElementById('pillRow');
+  CATS.forEach((c,i)=>{
+    const p=document.createElement('div');
+    p.className='pill'+(i===0?' active':'');
+    p.textContent=c;
+    p.onclick=()=>{
+      document.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      renderGrid(c==='All'?ITEMS:ITEMS.filter(x=>x.cat===c));
+    };
+    pr.appendChild(p);
+  });
+  renderGrid(ITEMS);
+  document.getElementById('searchInput').addEventListener('input',e=>{
+    const q=e.target.value.toLowerCase();
+    renderGrid(ITEMS.filter(i=>i.name.toLowerCase().includes(q)||i.id.includes(q)));
+  });
+}
+
+function renderGrid(items){
+  const g=document.getElementById('itemGrid');
+  g.innerHTML='';
+  items.forEach(item=>{
+    const c=document.createElement('div');
+    c.className='item-card'+(selectedItem?.id===item.id?' selected':'');
+    c.innerHTML=`<span class="item-emoji">${item.icon}</span><div class="item-name">${item.name}</div><span class="item-id">${item.id.replace('item_','')}</span>`;
+    c.onclick=()=>pickItem(item);
+    g.appendChild(c);
+  });
+}
+
+function pickItem(item){
+  selectedItem=item;
+  document.querySelectorAll('.item-card').forEach(c=>c.classList.toggle('selected',c.querySelector('.item-id')?.textContent===item.id.replace('item_','')));
+  document.getElementById('selDisplay').innerHTML=`<span class="sel-emoji">${item.icon}</span><div class="sel-info"><div class="sel-name">${item.name}</div><div class="sel-id">${item.id}</div></div>`;
+  iLog('dim','// Selected: '+item.id);
+}
+
+function changeQty(d){qty=Math.max(1,Math.min(64,qty+d));document.getElementById('qtyNum').textContent=qty;}
+
+function addToSlot(){
+  if(!selectedItem){iLog('err','// Error: no item selected');return;}
+  const hue=+document.getElementById('sHue').value;
+  const sat=+document.getElementById('sSat').value;
+  const scale=+document.getElementById('sScale').value;
+  const obj={itemID:selectedItem.id,colorHue:hue,colorSaturation:sat,scaleModifier:scale};
+  if(qty>1){
+    loadout[currentSlot]={itemID:'item_backpack_large_base',colorHue:0,colorSaturation:0,scaleModifier:0,children:Array(qty).fill(null).map(()=>({...obj}))};
+    iLog('ok',`// Added ${qty}x ${selectedItem.name} → ${currentSlot}`);
+  } else {
+    loadout[currentSlot]=obj;
+    iLog('ok',`// Added ${selectedItem.name} → ${currentSlot}`);
+  }
+  updateSlots();
+  saveHistoryEntry();
+}
+
+// ── SLOTS ────────────────────────────────────────────────────
+function selectSlot(slot,el){
+  currentSlot=slot;
+  document.querySelectorAll('.slot-card').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('targetSlotLabel').textContent=SLOT_NAMES[slot];
+}
+
+function clearSlot(slot){
+  loadout[slot]={};
+  updateSlots();
+  iLog('warn','// Cleared: '+slot);
+}
+
+function clearAll(){
+  Object.keys(loadout).forEach(k=>loadout[k]={});
+  updateSlots();
+  iLog('warn','// All slots cleared');
+}
+
+function updateSlots(){
+  Object.entries(loadout).forEach(([slot,data])=>{
+    const sc=document.getElementById('sc-'+slot);
+    const card=document.querySelector(`[data-slot="${slot}"]`);
+    if(!sc||!card)return;
+    if(data.itemID){
+      sc.textContent=data.itemID.replace('item_','')+(data.children?` +${data.children.length}`:'');
+      sc.classList.remove('empty');
+      card.classList.add('filled');
+    } else {
+      sc.textContent='Empty';
+      sc.classList.add('empty');
+      card.classList.remove('filled');
+    }
+  });
+}
+
+// ── LOBBY MAP ────────────────────────────────────────────────
+const PLAYER_COLORS={you:'#7c5cfc',friend:'#60a5fa',enemy:'#f87171',unknown:'#fbbf24'};
+
+function drawMap(){
+  const canvas=document.getElementById('mapCanvas');
+  const wrap=canvas.parentElement;
+  const size=wrap.offsetWidth;
+  canvas.width=size; canvas.height=size;
+  const ctx=canvas.getContext('2d');
+
+  ctx.fillStyle='#141417';
+  ctx.fillRect(0,0,size,size);
+
+  // grid
+  ctx.strokeStyle='rgba(255,255,255,0.05)';
+  ctx.lineWidth=1;
+  for(let i=0;i<=10;i++){
+    ctx.beginPath(); ctx.moveTo(i*size/10,0); ctx.lineTo(i*size/10,size); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,i*size/10); ctx.lineTo(size,i*size/10); ctx.stroke();
+  }
+
+  // center cross
+  ctx.strokeStyle='rgba(255,255,255,0.1)';
+  ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(size/2,0); ctx.lineTo(size/2,size); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,size/2); ctx.lineTo(size,size/2); ctx.stroke();
+
+  // players
+  players.forEach(p=>{
+    const x=p.x*size, y=p.y*size;
+    const col=PLAYER_COLORS[p.type]||'#fff';
+
+    // glow
+    const grd=ctx.createRadialGradient(x,y,0,x,y,18);
+    grd.addColorStop(0,col+'55'); grd.addColorStop(1,'transparent');
+    ctx.fillStyle=grd; ctx.beginPath(); ctx.arc(x,y,18,0,Math.PI*2); ctx.fill();
+
+    // dot
+    ctx.fillStyle=col;
+    ctx.beginPath(); ctx.arc(x,y,p.type==='you'?8:6,0,Math.PI*2); ctx.fill();
+
+    // name
+    ctx.fillStyle='#fff';
+    ctx.font=`${p.type==='you'?'bold ':''} 11px Space Mono, monospace`;
+    ctx.textAlign='center';
+    ctx.fillText(p.name,x,y-13);
+  });
+
+  updatePlayerCount();
+}
+
+function updatePlayerCount(){
+  document.getElementById('playerCountBadge').textContent=players.length+' player'+(players.length!==1?'s':'');
+}
+
+function addPlayer(){
+  const name=document.getElementById('playerNameInput').value.trim();
+  const type=document.getElementById('playerTypeSelect').value;
+  if(!name)return;
+  players.push({name,type,x:0.2+Math.random()*0.6,y:0.2+Math.random()*0.6});
+  document.getElementById('playerNameInput').value='';
+  renderPlayerList();
+  drawMap();
+}
+
+function removePlayer(idx){
+  if(players[idx]?.type==='you')return;
+  players.splice(idx,1);
+  renderPlayerList();
+  drawMap();
+}
+
+function clearPlayers(){
+  players=players.filter(p=>p.type==='you');
+  renderPlayerList();
+  drawMap();
+}
+
+function renderPlayerList(){
+  const list=document.getElementById('playerList');
+  list.innerHTML='';
+  players.forEach((p,i)=>{
+    const col=PLAYER_COLORS[p.type]||'#fff';
+    const row=document.createElement('div');
+    row.className='player-row'+(p.type==='you'?' you':'');
+    row.innerHTML=`
+      <div class="player-avatar" style="background:${col}22;border:1px solid ${col}55">${p.type==='you'?'👤':p.type==='friend'?'😊':p.type==='enemy'?'👿':'❓'}</div>
+      <div class="player-info">
+        <div class="player-name">${p.name} ${p.type==='you'?'<span class="badge badge-blue">You</span>':''}</div>
+        <div class="player-status" style="color:${col}">${p.type.charAt(0).toUpperCase()+p.type.slice(1)}</div>
+      </div>
+      ${p.type!=='you'?`<div class="player-action-btn" onclick="removePlayer(${i})">Remove</div>`:''}
+    `;
+    list.appendChild(row);
+  });
+}
+
+// drag players on map
+let dragging=null;
+document.getElementById('mapCanvas').addEventListener('pointerdown',e=>{
+  const canvas=e.target;
+  const rect=canvas.getBoundingClientRect();
+  const x=(e.clientX-rect.left)/rect.width;
+  const y=(e.clientY-rect.top)/rect.height;
+  let closest=null, dist=999;
+  players.forEach((p,i)=>{
+    const d=Math.hypot(p.x-x,p.y-y);
+    if(d<0.08&&d<dist){dist=d;closest=i;}
+  });
+  if(closest!==null)dragging=closest;
+});
+document.getElementById('mapCanvas').addEventListener('pointermove',e=>{
+  if(dragging===null)return;
+  const canvas=e.target;
+  const rect=canvas.getBoundingClientRect();
+  players[dragging].x=Math.max(0.02,Math.min(0.98,(e.clientX-rect.left)/rect.width));
+  players[dragging].y=Math.max(0.02,Math.min(0.98,(e.clientY-rect.top)/rect.height));
+  drawMap();
+});
+document.getElementById('mapCanvas').addEventListener('pointerup',()=>dragging=null);
+
+// ── PRESETS ──────────────────────────────────────────────────
+function applyPreset(name){
+  const mk=(id,n)=>Array(n).fill({itemID:id,colorHue:0,colorSaturation:0,scaleModifier:0});
+  const item=id=>({itemID:id,colorHue:0,colorSaturation:0,scaleModifier:0});
+  const pack=(id,children)=>({itemID:'item_backpack_large_base',colorHue:0,colorSaturation:0,scaleModifier:0,children});
+  const P={
+    loot:{rightHand:pack('item_goldbar',mk('item_coin',32)),leftHand:item('item_diamond'),back:pack('item_backpack_large_base',mk('item_goldbar',16))},
+    guns:{rightHand:item('item_rpg'),leftHand:item('item_shotgun'),back:pack('item_backpack_large_base',[item('item_revolver'),item('item_rifle'),item('item_crossbow'),item('item_grenade'),item('item_grenade')])},
+    health:{rightHand:item('item_medkit'),leftHand:item('item_bandage'),back:pack('item_backpack_large_base',mk('item_medkit',16))},
+    fish:{rightHand:item('item_fishing_rod_pro'),leftHand:item('item_bait_lure'),back:pack('item_backpack_large_base',[...mk('item_bait_worm',5),...mk('item_bait_lure',5)])},
+    apples:{rightHand:pack('item_apple',mk('item_apple',32)),leftHand:item('item_apple')},
+    maxpack:{rightHand:pack('item_backpack_large_base',mk('item_goldbar',32)),leftHand:pack('item_backpack_large_base',mk('item_diamond',32)),back:pack('item_backpack_large_base',mk('item_goldbar',32))},
+  };
+  if(P[name]){
+    Object.assign(loadout,P[name]);
+    updateSlots();
+    saveHistoryEntry(name+' preset');
+    pLog('ok','// Preset "'+name+'" applied');
+  }
+}
+
+// ── IMPORT / EXPORT ──────────────────────────────────────────
+function generateJSON(){
+  const out={version:1,"444mat-json-maker.netlify.app":"",...loadout};
+  const j=JSON.stringify(out,null,2);
+  document.getElementById('jsonOut').value=j;
+  eLog('ok','// JSON generated — '+Object.values(loadout).filter(v=>v.itemID).length+' slots filled');
+  return j;
+}
+
+function copyJSON(){
+  const j=generateJSON();
+  navigator.clipboard.writeText(j).then(()=>{
+    const b=document.getElementById('copyBtn');
+    b.textContent='Copied!'; b.classList.add('ok');
+    setTimeout(()=>{b.textContent='Copy';b.classList.remove('ok');},1500);
+  });
+}
+
+function downloadJSON(){
+  const j=generateJSON();
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([j],{type:'application/json'}));
+  a.download='thatchmods_loadout.json'; a.click();
+  eLog('ok','// Downloaded');
+}
+
+function importJSON(){
+  try{
+    const raw=document.getElementById('importArea').value.trim();
+    if(!raw){imLog('err','// Error: paste JSON first');return;}
+    const data=JSON.parse(raw);
+    ['leftHand','rightHand','leftHip','rightHip','back'].forEach(s=>{if(data[s]!==undefined)loadout[s]=data[s];});
+    updateSlots();
+    saveHistoryEntry('imported');
+    imLog('ok','// Imported successfully!');
+  }catch(e){imLog('err','// Error: '+e.message);}
+}
+
+// ── NOTES ────────────────────────────────────────────────────
+function initNotes(){
+  const ta=document.getElementById('notesArea');
+  ta.value=notes;
+  ta.addEventListener('input',()=>{
+    notes=ta.value;
+    document.getElementById('notesCounter').textContent=notes.length+' chars';
+  });
+}
+
+function clearNotes(){
+  notes='';
+  document.getElementById('notesArea').value='';
+  document.getElementById('notesCounter').textContent='0 chars';
+}
+
+// ── HISTORY ──────────────────────────────────────────────────
+function saveHistoryEntry(label){
+  const filled=Object.entries(loadout).filter(([,v])=>v.itemID);
+  if(!filled.length)return;
+  const snap=JSON.parse(JSON.stringify(loadout));
+  history.unshift({label:label||filled.map(([k,v])=>v.itemID.replace('item_','')).join(', '),time:new Date().toLocaleTimeString(),loadout:snap});
+  if(history.length>20)history.pop();
+}
+
+function renderHistory(){
+  const list=document.getElementById('historyList');
+  if(!history.length){list.innerHTML='<div class="history-empty">No history yet — build a loadout!</div>';return;}
+  list.innerHTML='';
+  history.forEach((h,i)=>{
+    const card=document.createElement('div');
+    card.className='history-card';
+    card.innerHTML=`
+      <div class="history-icon">📋</div>
+      <div class="history-info">
+        <div class="history-name">${h.label}</div>
+        <div class="history-time">${h.time}</div>
+      </div>
+      <div class="history-load" onclick="loadHistory(${i})">Load</div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function loadHistory(i){
+  loadout=JSON.parse(JSON.stringify(history[i].loadout));
+  updateSlots();
+  iLog('ok','// Loaded from history');
+  navTo('slots',document.querySelector('[data-page="slots"]'));
+}
+
+function clearHistory(){history=[];renderHistory();}
+
+// ── SETTINGS ─────────────────────────────────────────────────
+function initSettings(){
+  const sw=document.getElementById('swatches');
+  THEMES.forEach((c,i)=>{
+    const s=document.createElement('div');
+    s.className='swatch'+(i===0?' active':'');
+    s.style.background=c;
+    s.onclick=()=>{
+      document.querySelectorAll('.swatch').forEach(x=>x.classList.remove('active'));
+      s.classList.add('active');
+      document.documentElement.style.setProperty('--accent',c);
+      document.getElementById('themeToggle').style.background=c;
+      themeIdx=i;
+    };
+    sw.appendChild(s);
+  });
+}
+
+function cycleTheme(){
+  themeIdx=(themeIdx+1)%THEMES.length;
+  const c=THEMES[themeIdx];
+  document.documentElement.style.setProperty('--accent',c);
+  document.getElementById('themeToggle').style.background=c;
+  document.querySelectorAll('.swatch').forEach((s,i)=>s.classList.toggle('active',i===themeIdx));
+}
+
+function setFontSize(sz){
+  const map={sm:'12px',md:'14px',lg:'17px',xl:'20px'};
+  document.body.style.fontSize=map[sz];
+  document.querySelectorAll('.font-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===sz));
+}
+
+// ── LOGS ─────────────────────────────────────────────────────
+function iLog(cls,msg){appendLog('itemLog',cls,msg);}
+function pLog(cls,msg){appendLog('presetLog',cls,msg);}
+function eLog(cls,msg){appendLog('exportLog',cls,msg);}
+function imLog(cls,msg){appendLog('importLog',cls,msg);}
+function appendLog(id,cls,msg){
+  const l=document.getElementById(id);
+  if(!l)return;
+  l.innerHTML+=`<br><span class="${cls}">${msg}</span>`;
+  l.scrollTop=l.scrollHeight;
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+initItems();
+initNotes();
+initSettings();
+renderPlayerList();
+</script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMH Menu</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+background: #0a0a0f;
+font-family: ‘Segoe UI’, Arial, sans-serif;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: flex-start;
+padding: 40px 20px 60px;
+}
+
+.page-header {
+text-align: center;
+margin-bottom: 32px;
+}
+.page-header h1 {
+color: #fff;
+font-size: 1.1rem;
+font-weight: 400;
+letter-spacing: 0.1em;
+margin-bottom: 4px;
+}
+.page-header p {
+color: #555;
+font-size: 0.75rem;
+}
+
+.menu-wrap {
+display: flex;
+gap: 20px;
+align-items: flex-start;
+flex-wrap: wrap;
+justify-content: center;
+}
+
+.menu {
+background: #000;
+border: 3px solid #1a6fff;
+width: 300px;
+box-shadow: 0 0 30px rgba(26,111,255,0.4), inset 0 0 20px rgba(0,0,0,0.8);
+}
+
+.menu-title {
+background: #000;
+border-bottom: 2px solid #1a6fff;
+padding: 12px 16px;
+text-align: center;
+color: #fff;
+font-size: 1.15rem;
+font-weight: 700;
+letter-spacing: 0.05em;
+}
+
+.menu-version {
+background: #000;
+border-bottom: 2px solid #1a6fff;
+padding: 6px 16px;
+text-align: center;
+color: #888;
+font-size: 0.7rem;
+letter-spacing: 0.1em;
+}
+
+.menu-btn {
+display: block;
+width: 100%;
+background: #050510;
+border: none;
+border-bottom: 1px solid #1a3a8a;
+color: #fff;
+font-size: 1rem;
+font-weight: 600;
+padding: 14px 20px;
+text-align: center;
+cursor: pointer;
+transition: background 0.12s, color 0.12s;
+font-family: ‘Segoe UI’, Arial, sans-serif;
+letter-spacing: 0.03em;
+}
+
+.menu-btn:hover, .menu-btn.active {
+background: #1a6fff;
+color: #fff;
+}
+
+.menu-btn:last-child { border-bottom: none; }
+
+.menu-btn.discord-btn { color: #7289da; }
+.menu-btn.discord-btn:hover { background: #7289da; color: #fff; }
+
+.sub-panel {
+background: #000;
+border: 3px solid #1a6fff;
+width: 300px;
+box-shadow: 0 0 30px rgba(26,111,255,0.3);
+display: none;
+}
+
+.sub-panel.visible {
+display: block;
+animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateX(-8px); }
+to { opacity: 1; transform: translateX(0); }
+}
+
+.sub-title {
+background: #1a6fff;
+padding: 12px 16px;
+text-align: center;
+color: #fff;
+font-size: 1rem;
+font-weight: 700;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+}
+
+.sub-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 11px 16px;
+border-bottom: 1px solid #1a3a8a;
+cursor: pointer;
+transition: background 0.1s;
+}
+
+.sub-item:last-child { border-bottom: none; }
+.sub-item:hover { background: #0d1a40; }
+
+.sub-item-name {
+color: #fff;
+font-size: 0.9rem;
+font-weight: 600;
+}
+
+.sub-item-desc {
+color: #555;
+font-size: 0.72rem;
+margin-top: 2px;
+}
+
+.sub-item-toggle {
+width: 36px;
+height: 20px;
+background: #1a1a2a;
+border: 2px solid #1a6fff;
+border-radius: 10px;
+flex-shrink: 0;
+position: relative;
+cursor: pointer;
+transition: background 0.2s;
+}
+
+.sub-item-toggle::after {
+content: ‘’;
+position: absolute;
+width: 12px;
+height: 12px;
+background: #555;
+border-radius: 50%;
+top: 2px;
+left: 2px;
+transition: all 0.2s;
+}
+
+.sub-item-toggle.on { background: #1a6fff; }
+.sub-item-toggle.on::after { left: 18px; background: #fff; }
+
+.info-bar {
+margin-top: 32px;
+text-align: center;
+color: #333;
+font-size: 0.72rem;
+letter-spacing: 0.15em;
+text-transform: uppercase;
+}
+
+.discord-link-banner {
+background: #000;
+border: 2px solid #7289da;
+padding: 14px 28px;
+margin-top: 28px;
+text-align: center;
+color: #7289da;
+font-size: 0.85rem;
+font-weight: 600;
+letter-spacing: 0.1em;
+cursor: pointer;
+transition: background 0.15s;
+text-decoration: none;
+display: inline-block;
+}
+.discord-link-banner:hover { background: #7289da; color: #fff; }
+</style>
+
+</head>
+<body>
+
+<div class="page-header">
+  <h1>TMH Menu Lib</h1>
+  <p>2021.3.X &nbsp;·&nbsp; hold Y + click button with other hand</p>
+</div>
+
+<div class="menu-wrap">
+
+  <div class="menu">
+    <div class="menu-title">TMH : 1]</div>
+    <div class="menu-version">2021.3.X</div>
+    <a href="https://discord.gg/4tmh" target="_blank" style="text-decoration:none">
+      <button class="menu-btn discord-btn">Join Discord</button>
+    </a>
+    <button class="menu-btn" onclick="openPanel('settings', this)">Settings</button>
+    <button class="menu-btn" onclick="openPanel('movement', this)">Movement</button>
+    <button class="menu-btn" onclick="openPanel('player', this)">Player</button>
+    <button class="menu-btn" onclick="openPanel('visuals', this)">Visuals</button>
+    <button class="menu-btn" onclick="openPanel('photon', this)">Photon</button>
+    <button class="menu-btn" onclick="openPanel('overpowered', this)">Overpowered</button>
+    <button class="menu-btn" onclick="openPanel('credits', this)">Credits</button>
+  </div>
+
+  <div id="panel-settings" class="sub-panel">
+    <div class="sub-title">Settings</div>
+    <div class="sub-item" onclick="toggleItem(this)">
+      <div><div class="sub-item-name">Right Hand Menu</div><div class="sub-item-desc">Switch menu to right hand</div></div>
+      <div class="sub-item-toggle"></div>
+    </div>
+    <div class="sub-item" onclick="toggleItem(this)">
+      <div><div class="sub-item-name">Notifications</div><div class="sub-item-desc">Toggle in-game notifications</div></div>
+      <div class="sub-item-toggle"></div>
+    </div>
+    <div class="sub-item" onclick="toggleItem(this)">
+      <div><div class="sub-item-name">Disconnect Button</div><div class="sub-item-desc">Show/hide disconnect button</div></div>
+      <div class="sub-item-toggle"></div>
+    </div>
+  </div>
+
+  <div id="panel-movement" class="sub-panel">
+    <div class="sub-title">Movement</div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">PlatForms V2</div><div class="sub-item-desc">Spawn usable platforms</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Fly</div><div class="sub-item-desc">Hand-based flying</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Long Arms</div><div class="sub-item-desc">Extends arm length</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Car</div><div class="sub-item-desc">Drive around like a car</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">SlingshotFly</div><div class="sub-item-desc">Launch yourself forward</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Excel Fly</div><div class="sub-item-desc">Fly using both primary buttons</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">JFly</div><div class="sub-item-desc">Fly using joystick controls</div></div><div class="sub-item-toggle"></div></div>
+  </div>
+
+  <div id="panel-player" class="sub-panel">
+    <div class="sub-title">Player</div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">TMH Name</div><div class="sub-item-desc">Set custom colored "TMH" name</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">No Name</div><div class="sub-item-desc">Remove visible name</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Break Name</div><div class="sub-item-desc">Glitched/long name</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Discord Name</div><div class="sub-item-desc">Set name to Discord invite</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Ghost Monkey</div><div class="sub-item-desc">Ghost-like character</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Invis Monkey</div><div class="sub-item-desc">Make character invisible</div></div><div class="sub-item-toggle"></div></div>
+  </div>
+
+  <div id="panel-visuals" class="sub-panel">
+    <div class="sub-title">Visuals</div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Beacons</div><div class="sub-item-desc">ESP-style player beacons</div></div><div class="sub-item-toggle"></div></div>
+  </div>
+
+  <div id="panel-photon" class="sub-panel">
+    <div class="sub-title">Photon</div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Leave Lobby</div><div class="sub-item-desc">Leave current lobby</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Reconnect</div><div class="sub-item-desc">Reconnect to lobby</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Join Server</div><div class="sub-item-desc">Attempt to join a server</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Authenticate</div><div class="sub-item-desc">Re-authenticate connection</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">200 Player Room</div><div class="sub-item-desc">Create/join 200 player lobby</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Join Code 1</div><div class="sub-item-desc">Join room with code "1"</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Join Code 2</div><div class="sub-item-desc">Join room with code "2"</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Join Code 3</div><div class="sub-item-desc">Join room with code "3"</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Join Code TMH</div><div class="sub-item-desc">Join room with code "TMH"</div></div><div class="sub-item-toggle"></div></div>
+  </div>
+
+  <div id="panel-overpowered" class="sub-panel">
+    <div class="sub-title">Overpowered</div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Set Master</div><div class="sub-item-desc">Set yourself as master client</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Crash All</div><div class="sub-item-desc">Attempt to crash all players</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Set Server PRIVATE</div><div class="sub-item-desc">Set lobby to private</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Set Server PUBLIC</div><div class="sub-item-desc">Set lobby to public</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Buy Stick</div><div class="sub-item-desc">Unlock Stick cosmetic</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Buy Admin</div><div class="sub-item-desc">Unlock Admin cosmetic</div></div><div class="sub-item-toggle"></div></div>
+    <div class="sub-item" onclick="toggleItem(this)"><div><div class="sub-item-name">Buy Fingerpainter</div><div class="sub-item-desc">Unlock Fingerpainter cosmetic</div></div><div class="sub-item-toggle"></div></div>
+  </div>
+
+  <div id="panel-credits" class="sub-panel">
+    <div class="sub-title">Credits</div>
+    <div class="sub-item"><div><div class="sub-item-name">Glitch</div><div class="sub-item-desc">Menu porter & developer</div></div></div>
+    <div class="sub-item"><div><div class="sub-item-name">Bus</div><div class="sub-item-desc">Contributed some mods</div></div></div>
+  </div>
+
+</div>
+
+<a href="https://discord.gg/4tmh" target="_blank" class="discord-link-banner">Join TMH Discord — discord.gg/4tmh</a>
+
+<div class="info-bar">Controls: Hold Y + click button with other hand</div>
+
+<script>
+  let currentPanel = null;
+  let currentBtn = null;
+
+  function openPanel(name, btn) {
+    document.querySelectorAll('.sub-panel').forEach(p => p.classList.remove('visible'));
+    if (currentBtn) currentBtn.classList.remove('active');
+
+    if (currentPanel === name) {
+      currentPanel = null;
+      currentBtn = null;
+      return;
+    }
+
+    const panel = document.getElementById('panel-' + name);
+    if (panel) {
+      panel.classList.add('visible');
+      currentPanel = name;
+      currentBtn = btn;
+      btn.classList.add('active');
+    }
+  }
+
+  function toggleItem(el) {
+    const toggle = el.querySelector('.sub-item-toggle');
+    if (toggle) toggle.classList.toggle('on');
+  }
+</script>
+
+</body>
+</html>
